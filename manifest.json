@@ -1,0 +1,20 @@
+{
+      "name": "أدواتي — كل أدواتك الرقمية في مكان واحد",
+        "short_name": "أدواتي",
+          "description": "تحويل وضغط وتحرير الصور وملفات PDF والفيديو والصوت — معالجة محلية سريعة بخصوصية كاملة.",
+            "start_url": "./index.html",
+              "scope": "./",
+                "display": "standalone",
+                  "orientation": "any",
+                    "lang": "ar",
+                      "dir": "rtl",
+                        "background_color": "#f2f4f9",
+                          "theme_color": "#3f3fbe",
+                            "icons": [
+                                { "src": "icon-128.png", "sizes": "128x128", "type": "image/png" },
+                                    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+                                        { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+                                          ]
+                                          }
+                                          
+                                
