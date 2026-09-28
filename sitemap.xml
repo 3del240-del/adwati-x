@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://adwati-v.vercel.app/</loc><priority>1.0</priority></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/image-compressor</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/image-resizer</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/image-cropper</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/background-remover</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/ocr-image</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/merge-pdf</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/split-pdf</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/compress-pdf</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/pdf-to-jpg</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/pdf-to-word</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/word-to-pdf</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/video-downloader</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/video-compressor</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/video-to-mp3</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/mp3-converter</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/audio-trimmer</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/qr-generator</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/qr-scanner</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/fancy-text</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/case-converter</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/text-cleaner</loc></url>
+  <url><loc>https://adwati-v.vercel.app/#/tools/password-generator</loc></url>
+</urlset>
