@@ -1516,6 +1516,11 @@ function bFancy(x,stage){
 }
 function TXT(id,icon,arN,enN,arD,enD,build,kw){reg({id:id,cat:'text',icon:icon,kind:'text',ar:{name:arN,desc:arD},en:{name:enN,desc:enD},build:build,kw:kw||[]});}
 TXT('fancy-text','wand-sparkles','زخرفة النصوص والأسماء','Fancy Text Fonts','حوّل اسمك أو أي نص إلى عشرات الأشكال الزخرفية عربي وإنجليزي وانسخها بضغطة.','Transform any name or text into dozens of decorative styles, Arabic and English.',bFancy,['زخرفة','خطوط','أسماء','تزيين','fancy','font']);
+  TXT('age-calculator','calendar','حاسبة العمر — هجري وميلادي','Age Calculator','احسب عمرك بالسنين والأشهر والأيام بالهجري والميلادي ويوم ميلادك وعمرك القادم.','Calculate your age in Hijri and Gregorian calendars.',['حاسبة العمر','عمري','هجري','ميلادي','عمر','age'],bAge);
+TXT('color-picker','pipette','مقياس اللون من صورة','Color Picker from Image','ارفع صورة واضغط على أي لون فيها ليظهر كوده HEX وRGB وHSL للتصميم.','Upload an image and tap any color to get its HEX, RGB and HSL codes.',['لون','الوان','color','اخذ لون','piksel','بكسل'],bColorPick);
+T('calc-scientific','calculator','الآلة الحاسبة العلمية','Scientific Calculator','آلة حاسبة كاملة بعمليات علمية وجذور وأسس ولوغاريتمات.','Full scientific calculator with advanced operations.',['الة حاسبة','حاسبة','calculator'],bCalcSci);
+TXT('thumbnail-picker','image','اختيار أفضل صورة مصغرة','Best Thumbnail Picker','ارفع صورك المصغرة وقارنها بالمقاسات الرسمية لكل منصة ويقولك الأنسب والأفضل جودة.','Upload your thumbnails and compare them with official platform sizes to find the best.',['صورة مصغرة','thumbnail','صورة مصغرة يوتيوب','مصغرات'],bThumbPick);
+TXT('case-converter','case-upper','محوّل حالة النص','Text Case Converter','حوّل النص إلى أحرف كبيرة أو صغيرة أو عنوانية.','Switch text between UPPER, lower and Title case.',bCase,['حالة','نص','case']);
 TXT('case-converter','case-upper','محوّل حالة النص','Text Case Converter','حوّل النص إلى أحرف كبيرة أو صغيرة أو عنوانية.','Switch text between UPPER, lower and Title case.',bCase,['حالة','نص','case']);
 TXT('word-counter','whole-word','عداد الكلمات','Word Counter','أحصِ الكلمات والجمل ووقت القراءة لحظيًا.','Count words, sentences and reading time live.',bCount,['عد','كلمات','نص']);
 TXT('char-counter','hash','عداد الأحرف','Character Counter','أحصِ الأحرف مع وبدون المسافات لحظيًا.','Count characters with and without spaces, live.',bCount,['عد','أحرف','نص']);
@@ -2302,6 +2307,193 @@ function textResult(stage,text){
  $('#cp',out).addEventListener('click',function(){copyTxt(text);});
  $('#dlt',out).addEventListener('click',function(){download(new Blob([text],{type:'text/plain;charset=utf-8'}),'text.txt');});
 }
+  /* ============ 1) حاسبة العمر — هجري وميلادي ============ */
+function bAge(x,stage){
+ stage.innerHTML='<div class="ctrl" style="max-width:340px"><label>'+(LANG==='ar'?'تاريخ الميلاد':'Date of birth')+'</label><input type="date" id="bd" style="padding:12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);width:100%"></div>'
+  +'<div class="actrow"><button class="btn btn-pri" id="go"><i data-lucide="calendar"></i>'+(LANG==='ar'?'احسب':'Calculate')+'</button></div>'
+  +'<div id="out"></div>';
+ paintIcons();
+ $('#go',stage).addEventListener('click',function(){
+  var v=$('#bd',stage).value;
+  if(!v)return toast(LANG==='ar'?'اختر تاريخ ميلادك أولًا.':'Pick your birth date first.','err');
+  var bd=new Date(v+'T00:00:00'),now=new Date();
+  if(bd>now)return toast(LANG==='ar'?'التاريخ في المستقبل!':'Date is in the future!','err');
+  var y=now.getFullYear()-bd.getFullYear();
+  var m=now.getMonth()-bd.getMonth();
+  var d=now.getDate()-bd.getDate();
+  if(d<0){m--;d+=new Date(now.getFullYear(),now.getMonth(),0).getDate();}
+  if(m<0){y--;m+=12;}
+  var totalDays=Math.floor((now-bd)/86400000);
+  var totalWeeks=Math.floor(totalDays/7);
+  var totalHours=Math.floor(totalDays*24);
+  var fmtDate=function(d2){return d2.toLocaleDateString(LANG==='ar'?'ar-EG-u-ca-islamic':'en-u-ca-islamic',{day:'numeric',month:'long',year:'numeric'});};
+  var fmtG=function(d2){return d2.toLocaleDateString(LANG==='ar'?'ar-EG':'en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});};
+  var nextBd=new Date(now.getFullYear(),bd.getMonth(),bd.getDate());
+  if(nextBd<now)nextBd=new Date(now.getFullYear()+1,bd.getMonth(),bd.getDate());
+  var daysToNext=Math.ceil((nextBd-now)/86400000);
+  var items=[
+   [LANG==='ar'?'عمرك بالميلادي':'Gregorian age',y+' '+(LANG==='ar'?'سنة و ':'years, ')+m+' '+(LANG==='ar'?'شهر و ':'months, ')+d+' '+(LANG==='ar'?'يوم':'days')],
+   [LANG==='ar'?'عمرك بالهجري (تقريبي)':'Hijri age (approx)',Math.floor(totalDays*0.970224/365.2422*365.2422/354.367).toFixed(1)+' '+(LANG==='ar'?'سنة هجرية':'Hijri years')],
+   [LANG==='ar'?'إجمالي الأيام':'Total days',totalDays.toLocaleString()],
+   [LANG==='ar'?'إجمالي الأسابيع':'Total weeks',totalWeeks.toLocaleString()],
+   [LANG==='ar'?'إجمالي الساعات':'Total hours',totalHours.toLocaleString()],
+   [LANG==='ar'?'ميلادك بالهجري كان':'Hijri birth date',fmtDate(bd)],
+   [LANG==='ar'?'ميلادك كان':'Birth date was',fmtG(bd)],
+   [LANG==='ar'?'عيد ميلادك الجاي بعد':'Next birthday in',daysToNext+' '+(LANG==='ar'?'يوم':'days')]
+  ];
+  $('#out',stage).innerHTML='<div class="done"><div class="dhead"><i data-lucide="check-circle-2"></i>'+(LANG==='ar'?'تم الحساب':'Calculated')+'</div>'
+   +'<div class="ctrls">'+items.map(function(i){return '<div class="ctrl"><label>'+i[0]+'</label><input readonly value="'+esc(i[1])+'" style="font-weight:800;color:var(--pri)"></div>';}).join('')+'</div></div>';
+  paintIcons();
+ });
+}
+/* ============ 2) مقياس اللون من صورة ============ */
+function bColorPick(x,stage){
+ stage.innerHTML='<div class="drop" id="dz"><i data-lucide="upload-cloud"></i><b>'+t(UI.drop)+'</b><small>'+t(UI.orClick)+'</small></div>'
+  +'<input type="file" id="fin" class="hide" accept="'+IMG_ACC+'">'
+  +'<div id="work" style="margin-top:16px"></div>';
+ paintIcons();
+ var dz=$('#dz',stage),fin=$('#fin',stage);
+ dz.addEventListener('click',function(){fin.click();});
+ fin.addEventListener('change',function(){if(fin.files[0])load(fin.files[0]);});
+ dz.addEventListener('dragover',function(e){e.preventDefault();});
+ dz.addEventListener('drop',function(e){e.preventDefault();if(e.dataTransfer.files[0])load(e.dataTransfer.files[0]);});
+ function load(f){
+  loadImageFile(f).then(function(img){
+   var maxW=520;
+   var sc=Math.min(1,maxW/img.naturalWidth);
+   var w=Math.round(img.naturalWidth*sc),h=Math.round(img.naturalHeight*sc);
+   var cv=document.createElement('canvas');cv.width=w;cv.height=h;
+   cv.getContext('2d').drawImage(img,0,0,w,h);
+   cv.style.maxWidth='100%';cv.style.borderRadius='12px';cv.style.display='block';cv.style.touchAction='none';
+   var wk=$('#work',stage);
+   wk.innerHTML='';
+   wk.appendChild(cv);
+   var res=document.createElement('div');
+   res.style.marginTop='14px';
+   res.innerHTML='<div class="done" style="margin-top:14px"><div class="dhead"><i data-lucide="pipette"></i>'+(LANG==='ar'?'اضغط على أي لون في الصورة':'Tap any color on the image')+'</div><div id="sw" style="width:60px;height:60px;border-radius:12px;border:2px solid var(--line);margin-bottom:10px"></div><div id="codes" style="display:grid;gap:8px"></div></div>';
+   wk.appendChild(res);paintIcons();
+   function pick(e){
+    var r=cv.getBoundingClientRect();
+    var px,py;
+    if(e.touches){px=e.touches[0].clientX-r.left;py=e.touches[0].clientY-r.top;}
+    else{px=e.clientX-r.left;py=e.clientY-r.top;}
+    px=Math.max(0,Math.min(w-1,Math.round(px/sc)));py=Math.max(0,Math.min(h-1,Math.round(py/sc)));
+    var d=cv.getContext('2d').getImageData(px,py,1,1).data;
+    var hex='#'+[d[0],d[1],d[2]].map(function(c){return ('0'+c.toString(16)).slice(-2);}).join('').toUpperCase();
+    var rgb='rgb('+d[0]+', '+d[1]+', '+d[2]+')';
+    var r2=d[0]/255,g2=d[1]/255,b2=d[2]/255;
+    var mx=Math.max(r2,g2,b2),mn=Math.min(r2,g2,b2),df=mx-mn;
+    var hh=0;
+    if(df){ if(mx===r2)hh=((g2-b2)/df)%6; else if(mx===g2)hh=(b2-r2)/df+2; else hh=(r2-g2)/df+4; hh*=60; if(hh<0)hh+=360; }
+    var sl=mx?df/mx:0, li=(mx+mn)/2;
+    var hsl='hsl('+Math.round(hh)+', '+Math.round(sl*100)+'%, '+Math.round(li*100)+'%)';
+    $('#sw',stage).style.background=hex;
+    var codes=[[LANG==='ar'?'HEX':'HEX',hex],[LANG==='ar'?'RGB':'RGB',rgb],[LANG==='ar'?'HSL':'HSL',hsl]];
+    $('#codes',stage).innerHTML=codes.map(function(c){return '<div class="sugrow"><code>'+esc(c[1])+'</code><button class="iconbtn" style="border:1px solid var(--line)">'+ic('copy')+'</button></div>';}).join('');
+    $$('#codes button',stage).forEach(function(b,i){b.addEventListener('click',function(){copyTxt(codes[i][1]);});});
+   }
+   cv.addEventListener('click',pick);
+   cv.addEventListener('touchstart',function(e){pick(e);},{passive:true});
+  });
+ }
+}
+/* ============ 3) الآلة الحاسبة العلمية ============ */
+function bCalcSci(x,stage){
+ stage.innerHTML='<div class="ctrl"><input readonly id="disp" style="padding:16px;font-size:24px;font-weight:700;direction:ltr;text-align:end;background:var(--soft);border-radius:12px" value="0"></div>'
+  +'<div id="pad" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px"></div>';
+ paintIcons();
+ var keys=[['sin','fn'],['cos','fn'],['tan','fn'],['C','cl'],['7','n'],['8','n'],['9','n'],['÷','op'],['4','n'],['5','n'],['6','n'],['×','op'],['1','n'],['2','n'],['3','n'],['−','op'],['0','.','n'],['.','n'],['=','eq'],['+','op'],['√','fn'],['x²','fn'],['π','fn'],['%','fn']];
+ var pad=$('#pad',stage);
+ var expr='';
+ function upd(){$('#disp',stage).value=expr||'0';}
+ keys.forEach(function(k){
+  var b=document.createElement('button');
+  b.textContent=k[0];
+  b.style.cssText='padding:14px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);font-size:17px;font-weight:700;cursor:pointer';
+  b.addEventListener('click',function(){
+   var v=k[0];
+   if(v==='C'){expr='';upd();return;}
+   if(v==='='){
+    try{
+     var js=expr.replace(/÷/g,'/').replace(/×/g,'*').replace(/−/g,'-').replace(/π/g,'Math.PI')
+      .replace(/√\(/g,'Math.sqrt(').replace(/√/g,'Math.sqrt')
+      .replace(/sin\(/g,'Math.sin(').replace(/cos\(/g,'Math.cos(').replace(/tan\(/g,'Math.tan(')
+      .replace(/(\d+(?:\.\d+)?)%/g,'($1/100)');
+     var r=Function('"use strict";return ('+js+')')();
+     if(r===undefined||isNaN(r))throw 0;
+     expr=String(Math.round(r*1e10)/1e10);
+    }catch(e){expr='';toast(LANG==='ar'?'تعبير غير صحيح':'Invalid expression','err');}
+    upd();return;
+   }
+   if(v==='sin')expr+='sin(';
+   else if(v==='cos')expr+='cos(';
+   else if(v==='tan')expr+='tan(';
+   else if(v==='√')expr+='√(';
+   else if(v==='x²')expr+='^2';
+   else expr+=v;
+   upd();
+  });
+  pad.appendChild(b);
+ });
+}
+/* ============ 4) اختيار أفضل صورة مصغرة ============ */
+function bThumbPick(x,stage){
+ var PLATFORMS=[
+  {n:{ar:'يوتيوب مصغرة',en:'YouTube Thumbnail'},w:1280,h:720},
+  {n:{ar:'يوتيوب شورتس',en:'YouTube Shorts'},w:1080,h:1920},
+  {n:{ar:'تيك توك',en:'TikTok'},w:1080,h:1920},
+  {n:{ar:'انستجرام مربع',en:'Instagram Post'},w:1080,h:1080},
+  {n:{ar:'انستجرام ستوري',en:'Instagram Story'},w:1080,h:1920},
+  {n:{ar:'فيسبوك غلاف',en:'Facebook Cover'},w:820,h:312},
+  {n:{ar:'تويتر/X منشور',en:'X Post'},w:1600,h:900},
+  {n:{ar:'واتساب ستوري',en:'WhatsApp Status'},w:1080,h:1920}
+ ];
+ stage.innerHTML='<div class="drop" id="dz"><i data-lucide="upload-cloud"></i><b>'+(LANG==='ar'?'ارفع صورك المصغرة (تقدر تختار أكتر من صورة)':'Upload your thumbnails (multiple allowed)')+'</b><small>'+t(UI.orClick)+'</small></div>'
+  +'<input type="file" id="fin" class="hide" multiple accept="'+IMG_ACC+'">'
+  +'<div id="work" style="margin-top:16px"></div>';
+ paintIcons();
+ var dz=$('#dz',stage),fin=$('#fin',stage);
+ dz.addEventListener('click',function(){fin.click();});
+ fin.addEventListener('change',function(){addFiles([...fin.files]);});
+ dz.addEventListener('dragover',function(e){e.preventDefault();});
+ dz.addEventListener('drop',function(e){e.preventDefault();addFiles([...e.dataTransfer.files]);});
+ function addFiles(list){
+  var wk=$('#work',stage);
+  wk.innerHTML='<p style="color:var(--tx2);font-size:14px">'+(LANG==='ar'?'جارٍ تحليل الصور…':'Analyzing images…')+'</p>';
+  Promise.all(list.map(function(f){return analyze(f);})).then(function(results){
+   results.sort(function(a,b){return b.score-a.score;});
+   wk.innerHTML='<div class="done"><div class="dhead"><i data-lucide="check-circle-2"></i>'+(LANG==='ar'?'الترتيب من الأفضل للأقل جودة':'Best to worst quality')+'</div>'
+    +results.map(function(r,i){
+     var badge=i===0?'<span style="background:var(--ok);color:#fff;border-radius:99px;padding:2px 10px;font-size:12px;margin-inline-start:8px">'+(LANG==='ar'?'الأفضل 👑':'BEST 👑')+'</span>':'';
+     return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);flex-wrap:wrap">'
+      +'<img src="'+r.url+'" style="width:70px;height:70px;object-fit:cover;border-radius:10px;border:1px solid var(--line)">'
+      +'<div style="flex:1;min-width:150px"><b style="font-size:13px">'+esc(r.name)+'</b>'+badge
+      +'<div style="font-size:12.5px;color:var(--tx2)">'+r.w+'×'+r.h+'px • '+fmtBytes(r.size)+' • '+(LANG==='ar'?'تقييم':'score')+': <b style="color:var(--pri)">'+r.score+'/100</b></div>'
+      +'<div style="font-size:12px;color:var(--tx2)">'+r.note+'</div></div></div>';
+    }).join('')+'</div>';
+   paintIcons();
+  });
+ }
+ function analyze(f){
+  return loadImageFile(f).then(function(img){
+   var w=img.naturalWidth,h=img.naturalHeight;
+   var url=URL.createObjectURL(f);
+   var size=f.size;
+   /* التقييم: الدقة + نسبة 16:9 الشائعة + الوزن المناسب */
+   var res=Math.min(100,Math.round((w*h)/(1280*720)*50));
+   var ratio=w/h;
+   var ratioScore=(Math.abs(ratio-16/9)<0.1)?30:(Math.abs(ratio-9/16)<0.1?25:15);
+   var sizeScore=(size>=30000&&size<=1048576)?20:(size<30000?8:12);
+   var score=Math.min(100,res+ratioScore+sizeScore);
+   var note='';
+   if(w<1280&&h<720)note=(LANG==='ar'?'⚠ الدقة أقل من المثالي (يوتيوب يحتاج 1280×720)':'⚠ Resolution below ideal (YouTube needs 1280×720)');
+   else if(size<30000)note=(LANG==='ar'?'⚠ حجم صغير جدًا — قد تبدو مضغوطة':'⚠ Very small file — may look compressed');
+   else if(size>2*1048576)note=(LANG==='ar'?'⚠ حجم كبير — اضغطها قبل الرفع':'⚠ Large file — compress it');
+   else note=(LANG==='ar'?'✔ مواصفات جيدة':'✔ Good specs');
+   return{name:f.name,w:w,h:h,size:size,score:score,note:note,url:url};
+  });
+ }
+     }
 function bCase(x,stage){
  textBase(stage,LANG==='ar'?'اكتب أو الصق نصك هنا…':'Type or paste your text here…');
  $('#extra',stage).innerHTML='<div class="ctrl" style="margin-top:14px;max-width:320px"><label>'+(LANG==='ar'?'التحويل إلى':'Convert to')+'</label><select id="m">'
