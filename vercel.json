@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/tools/(.*)", "destination": "/?/#/tools/$1" }
+  ]
+}
